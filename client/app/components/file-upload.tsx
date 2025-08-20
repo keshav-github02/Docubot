@@ -1,53 +1,54 @@
 'use client'
+import * as React from 'react'
+import { CloudUpload } from 'lucide-react'
+import Navbar from './navbar'
 
-import { Upload } from 'lucide-react';
-import * as React from 'react';
+const FileUploadComponent : React.FC = () => {
 
-
-
-
-const FileUploadComponent: React.FC = () => {
-
-
-    const handleFileUploadButtonClick = () => {
-        const el= document.createElement('input')
+    const HandleFileUpload = () => {
+        const el = document.createElement('input');
         el.setAttribute('type', 'file');
-        el.setAttribute('accept', '.pdf');
-        el.addEventListener('change', async(ev) => {
-            if(el.files && el.files.length > 0){
-                const file = el.files[0];
-               if(file){
-                    const formData = new FormData();
-                    formData.append('pdf', file);
-                   await  fetch('http://localhost:8000/upload/pdf', {
-                        method: 'POST',
-                        body: formData
+        el.setAttribute('accept', 'application/pdf');
 
-                    });
-                    console.log('File uploaded successfully');
-               }
-               
 
-                
+        el.addEventListener('change',async (ev) => {
+           if(el.files && el.files.length > 0) {
+            const file = el.files.item(0)
+
+            //send to backend
+            if(file){
+                const formData = new FormData()
+                formData.append('pdf', file)
+
+               await fetch('http://localhost:8000/upload/pdf', {
+                    method:'POST',
+                    body:formData
+                });
+            console.log("File is uploaded");
 
             }
-        });
-
+           }
+        })
         el.click();
 
+
     }
-
-    return (
-        <div className="bg-slate-900 text-white shadow-2xl flex items-center justify-center p-4 rounded-lg border-white border-2">
-
-            <div  onClick={handleFileUploadButtonClick}    className='flex justify-center items-center flex-col'><h3>Upload PDF file</h3>
-                <Upload />
+     return (
+        <div className="flex flex-col h-screen">
+            {/* Navbar */}
+            <Navbar />
+            
+            {/* Main Content */}
+            <div className="flex-1 flex items-center justify-center p-4">
+                <div className="bg-slate-900 text-white shadow-2xl flex justify-center items-center gap-2 p-4 rounded-lg cursor-pointer border-white border-2">
+                    <div onClick={HandleFileUpload} className="flex flex-col items-center justify-center">
+                        <h3>Upload PDF File</h3>            
+                        <CloudUpload />
+                    </div>
+                </div>
             </div>
         </div>
-    );
+     )
+}
 
-
-};
-
-
-export default FileUploadComponent
+export default FileUploadComponent;
